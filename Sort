@@ -1,0 +1,133 @@
+#include <iostream>
+#include <ctime>
+
+template <typename T>
+int RandomPivot(T min, T max) /*Создаём функцию для рандомного выбора опорного элемента из элементов массива*/
+{
+	srand(time(NULL));
+	return min + rand() % (max - min + 1);
+}
+
+template <typename T>
+void quickSort(T array[], int min, int max) /*Создаём функцию принимающую массив и границы массива(min и max)*/
+{
+	if (min < max) { /*Проверяем чтобы левая граница была меньше чем правая*/
+		int piInd = RandomPivot(min, max);/*передаем значение опорного элемента*/
+		T pivot = array[piInd];
+		std::swap(array[piInd], array[max]);
+		int i = min - 1;
+		for (int j = min; j < max; j++) /*Проходимся по массиву*/
+		{
+			if (array[j] < pivot) /*Проверяем меньше ли проверяемый элемент опорного элемента*/
+			{
+				i++;
+				std::swap(array[i], array[j]); /*Если условие выполняется то меняем проверяемый элемент местами с элементом, который левее pivota*/
+			}
+		}
+		std::swap(array[i + 1], array[max]); /*После прохода по всему массиву, все элементы меньшие pivota перемещены влево, а большие оказываются справа. Теперь же элемет с индексом
+		i+1 становится новым pivotom*/
+		quickSort(array, min,i); /*i ограничивает видимость функции до правой границы левой части массива*/
+		quickSort(array, i+2, max); /*i+2 ограничивает видимость функции до левой границы правой части массива*/
+	}
+}
+
+template <typename T>
+void insertionSort(T array[], int size) { /*Создаём функцию принимающую массив и размер массива*/
+	for (int i = 1; i < size; i++) /*Проходимся по массиву*/
+	{ 
+		T num = array[i]; /*Берем элемент массива, который нужно поставить на правильное место*/
+		int j = i - 1;
+		while (j >= 0 && array[j] > num) /*Двигаемся по массиву влево пока не найдётся элемент меньший num или пока не дойдем до начала массива */
+		{
+			array[j + 1] = array[j]; 
+			j--;
+		}
+		array[j + 1] = num;
+	}
+}
+
+template<typename T>
+void selectionSort(T array[], int size) /*Создаём функцию принимающую массив и размер массива*/
+{ 
+    for (int i = 0; i < size - 1; i++) /*Проходимся по массиву*/
+	{ 
+	   int minInd = i; /*Берем элемент (считается минимальным) массива для перестановки*/
+	   for (int j = i + 1; j < size; j++) /*Ищем минимальный элемент в оставщейся части массива*/
+	    { 
+		    if (array[j] < array[minInd]) /*Проверяем меньше ли найденный элемент текущего элемента*/
+			 { 
+			   minInd = j; /*Если да, то присаиваем переменной minInd значение минимального элемента*/
+			 }
+		}
+		std::swap(array[i], array[minInd]);
+	 }
+}
+
+
+
+
+
+
+int main()
+{
+	const int size = 1500000 ; /*Задаём размер массива*/
+
+	int array[size];
+	std::cout << "Array before sorting: "; /*Выводим начальный массив*/
+	for (int i = 0; i < size; i++) 
+	{
+		array[i] = rand() % 10000000; // Заполняем массив случайными числами от 0 до 99
+		std::cout << array[i] << " ";
+	}
+
+	{ /*Quick Sort*/
+		unsigned int start_time = clock();
+
+		quickSort(array, 0, size - 1); /*Вызываем функцию быстрой сортировки передавая ей массив
+	   и индексы начала и конца массива (0 и size-1 соответственно)*/
+		std::cout << "\n" << "1.Array: "; /*Выводим массив после сортировки*/
+		for (int k = 0; k < size; k++)
+		{
+			std::cout << array[k] << " ";
+		}
+
+		unsigned int end_time = clock();
+		unsigned int search_time = end_time - start_time;
+		std::cout << "\n" << search_time;
+	}
+
+	{ /*Insertion Sort*/
+		unsigned int start_time = clock();
+
+		insertionSort(array, size); /*Вызываем функцию сортировки вставками передавая ей массив
+		и размер массива*/
+		std::cout << "\n" << "2.Array: "; /*Выводим массив после сортировки*/
+		for (int k = 0; k < size; k++)
+		{
+			std::cout << array[k] << " ";
+		}
+
+		unsigned int end_time = clock();
+		unsigned int search_time = end_time - start_time;
+		std::cout << "\n" << search_time;
+	}
+
+	{ /*Selection Sort*/
+		unsigned int start_time = clock();
+
+		selectionSort(array, size); /*Вызываем функцию сортировки выбором передавая ей массив
+		и размер массива*/
+		std::cout << "\n" << "3.Array: "; /*Выводим массив после сортировки*/
+		for (int k = 0; k < size; k++)
+		{
+			std::cout << array[k] << " ";
+		}
+
+		unsigned int end_time = clock();
+		unsigned int search_time = end_time - start_time;
+		std::cout << "\n" << search_time;
+	}
+
+	
+	return 0;
+}

@@ -64,10 +64,6 @@ void selectionSort(T array[], int size) /*Создаём функцию прин
 }
 
 
-
-
-
-
 int main()
 {
 	const int size = 1500000 ; /*Задаём размер массива*/
